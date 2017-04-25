@@ -18,9 +18,62 @@ import java.io.IOException;
 
 final class MyJSONParser implements JSONParser {
 
-  @Override
-  public JSON parse(String in) throws IOException {
-    // TODO: implement this
-    return new MyJSON();
-  }
+	@Override
+	public JSON parse(String in) throws IOException {
+		MyJSON toBeReturned = new MyJSON();
+		for (int index = 0; index < in.length(); index++) {
+			char c = in.charAt(index);
+			// skip these characters
+			if (c == '{' || c == '}' || c == ',' || c == '\n' || c == '\t'
+					|| c == ' ') {
+				continue;
+			}
+			String key = "";
+			// if this is the beginning of a name
+			if (c == '"') {
+				c = in.charAt(++index);
+				while (c != '"') {
+					key += c;
+					c = in.charAt(++index);
+				}
+			}
+			c = in.charAt(++index);
+			// skip these characters
+			while (c == ',' || c == '\n' || c == '\t' || c == ' ') {
+				c = in.charAt(++index);
+			}
+			// ensure that parsing is going smoothly and that a colon is next
+			if (c != ':') {
+				return null;
+			}
+			c = in.charAt(++index);
+			// skip these characters
+			while (c == ',' || c == '\n' || c == '\t' || c == ' ') {
+				c = in.charAt(++index);
+			}
+			// Decide what kind of value is present
+			if (c == '{') {
+				String nestedJSON = "{";
+				int expectedClosingBraces = 1;
+				while (expectedClosingBraces > 0) {
+					c = in.charAt(++index);
+					if (c == '{')
+						expectedClosingBraces++;
+					else if (c == '}')
+						expectedClosingBraces--;
+					nestedJSON += c;
+				}
+				toBeReturned.setObject(key, parse(nestedJSON));
+			} else if (c == '"') {
+				String stringValue = "";
+				c = in.charAt(++index);
+				while (c != '"') {
+					stringValue += c;
+					c = in.charAt(++index);
+				}
+				toBeReturned.setString(key, stringValue);
+			}
+		}
+		return toBeReturned;
+	}
 }

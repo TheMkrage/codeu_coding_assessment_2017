@@ -19,63 +19,67 @@ import java.util.HashSet;
 
 final class TestMain {
 
-  public static void main(String[] args) {
+	public static void main(String[] args) {
 
-    final Tester tests = new Tester();
+		final Tester tests = new Tester();
 
-    tests.add("Empty Object", new Test() {
-      @Override
-      public void run(JSONFactory factory) throws Exception {
-        final JSONParser parser = factory.parser();
-        final JSON obj = parser.parse("{ }");
+		tests.add("Empty Object", new Test() {
+			@Override
+			public void run(JSONFactory factory) throws Exception {
+				final JSONParser parser = factory.parser();
+				final JSON obj = parser.parse("{ }");
 
-        final Collection<String> strings = new HashSet<>();
-        obj.getStrings(strings);
+				final Collection<String> strings = new HashSet<>();
+				obj.getStrings(strings);
 
-        Asserts.isEqual(strings.size(), 0);
+				Asserts.isEqual(strings.size(), 0);
 
-        final Collection<String> objects = new HashSet<>();
-        obj.getObjects(objects);
+				final Collection<String> objects = new HashSet<>();
+				obj.getObjects(objects);
 
-        Asserts.isEqual(objects.size(), 0);
-      }
-    });
+				Asserts.isEqual(objects.size(), 0);
+			}
+		});
 
-    tests.add("String Value", new Test() {
-      @Override
-      public void run(JSONFactory factory) throws Exception {
-        final JSONParser parser = factory.parser();
-        final JSON obj = parser.parse("{ \"name\":\"sam doe\" }");
+		tests.add("String Value", new Test() {
+			@Override
+			public void run(JSONFactory factory) throws Exception {
+				final JSONParser parser = factory.parser();
+				final JSON obj = parser
+						.parse("{ \"name\":\"	sam \ndoe is a cool dude\" }");
+				Asserts.isEqual("	" + "sam \ndoe is a cool dude",
+						obj.getString("name"));
+			}
+		});
 
-        Asserts.isEqual("sam doe", obj.getString("name"));
-     }
-    });
+		tests.add("Object Value", new Test() {
+			@Override
+			public void run(JSONFactory factory) throws Exception {
 
-    tests.add("Object Value", new Test() {
-      @Override
-      public void run(JSONFactory factory) throws Exception {
+				final JSONParser parser = factory.parser();
+				final JSON obj = parser
+						.parse("{ \"name\":{\"first\":\"sam\", \"last\":\"doe\", \"hello\":{\"test1\":\"sam\", \"test2\":\"doe\" } } }");
 
-        final JSONParser parser = factory.parser();
-        final JSON obj = parser.parse("{ \"name\":{\"first\":\"sam\", \"last\":\"doe\" } }");
+				final JSON nameObj = obj.getObject("name");
 
-        final JSON nameObj = obj.getObject("name");
+				Asserts.isNotNull(nameObj);
+				Asserts.isEqual("sam", nameObj.getString("first"));
+				Asserts.isEqual("doe", nameObj.getString("last"));
+				final JSON helloObj = nameObj.getObject("hello");
+				Asserts.isEqual("doe", helloObj.getString("test2"));
+			}
+		});
 
-        Asserts.isNotNull(nameObj);
-        Asserts.isEqual("sam", nameObj.getString("first"));
-        Asserts.isEqual("doe", nameObj.getString("last"));
-      }
-    });
+		tests.run(new JSONFactory() {
+			@Override
+			public JSONParser parser() {
+				return new MyJSONParser();
+			}
 
-    tests.run(new JSONFactory(){
-      @Override
-      public JSONParser parser() {
-        return new MyJSONParser();
-      }
-
-      @Override
-      public JSON object() {
-        return new MyJSON();
-      }
-    });
-  }
+			@Override
+			public JSON object() {
+				return new MyJSON();
+			}
+		});
+	}
 }

@@ -14,8 +14,6 @@
 
 package com.google.codeu.codingchallenge;
 
-import java.util.Collection;
-import java.util.HashSet;
 
 final class Asserts {
 

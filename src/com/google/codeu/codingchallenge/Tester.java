@@ -31,6 +31,7 @@ final class Tester {
         test.getValue().run(factory);
         System.out.format("PASS : Test %s\n", test.getKey());
       } catch (Exception ex) {
+    	  ex.printStackTrace();
         System.out.format("FAIL : Test %s (%s)\n", test.getKey(), ex.toString());
       }
     }
