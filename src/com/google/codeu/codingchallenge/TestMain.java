@@ -16,6 +16,7 @@ package com.google.codeu.codingchallenge;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 final class TestMain {
 
@@ -61,7 +62,9 @@ final class TestMain {
 						.parse("{ \"name\":{\"first\":\"sam\", \"last\":\"doe\", \"hello\":{\"test1\":\"sam\", \"test2\":\"doe\" } } }");
 
 				final JSON nameObj = obj.getObject("name");
-
+				// Collection<String> objNames = new LinkedList<String>();
+				// obj.getObjects(objNames);
+				// System.out.println(objNames);
 				Asserts.isNotNull(nameObj);
 				Asserts.isEqual("sam", nameObj.getString("first"));
 				Asserts.isEqual("doe", nameObj.getString("last"));

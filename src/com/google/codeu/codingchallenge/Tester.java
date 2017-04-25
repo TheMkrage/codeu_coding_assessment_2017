@@ -19,21 +19,21 @@ import java.util.HashMap;
 
 final class Tester {
 
-  private final Map<String, Test> tests = new HashMap<>();
+	private final Map<String, Test> tests = new HashMap<>();
 
-  public void add(String name, Test test) {
-    tests.put(name, test);
-  }
+	public void add(String name, Test test) {
+		tests.put(name, test);
+	}
 
-  public void run(JSONFactory factory) {
-    for (final Map.Entry<String, Test> test : tests.entrySet()) {
-      try {
-        test.getValue().run(factory);
-        System.out.format("PASS : Test %s\n", test.getKey());
-      } catch (Exception ex) {
-    	  ex.printStackTrace();
-        System.out.format("FAIL : Test %s (%s)\n", test.getKey(), ex.toString());
-      }
-    }
-  }
+	public void run(JSONFactory factory) {
+		for (final Map.Entry<String, Test> test : tests.entrySet()) {
+			try {
+				test.getValue().run(factory);
+				System.out.format("PASS : Test %s\n", test.getKey());
+			} catch (Exception ex) {
+				System.out.format("FAIL : Test %s (%s)\n", test.getKey(),
+						ex.toString());
+			}
+		}
+	}
 }

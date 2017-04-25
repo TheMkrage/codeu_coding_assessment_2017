@@ -32,6 +32,7 @@ final class MyJSONParser implements JSONParser {
 			// if this is the beginning of a name
 			if (c == '"') {
 				c = in.charAt(++index);
+				// concat until next quote
 				while (c != '"') {
 					key += c;
 					c = in.charAt(++index);
@@ -39,21 +40,14 @@ final class MyJSONParser implements JSONParser {
 			}
 			c = in.charAt(++index);
 			// skip these characters
-			while (c == ',' || c == '\n' || c == '\t' || c == ' ') {
-				c = in.charAt(++index);
-			}
-			// ensure that parsing is going smoothly and that a colon is next
-			if (c != ':') {
-				return null;
-			}
-			c = in.charAt(++index);
-			// skip these characters
-			while (c == ',' || c == '\n' || c == '\t' || c == ' ') {
+			while (c == ',' || c == '\n' || c == '\t' || c == ' ' || c == ':') {
 				c = in.charAt(++index);
 			}
 			// Decide what kind of value is present
 			if (c == '{') {
 				String nestedJSON = "{";
+				// accounted for more nested JSON when sending the nested JSON in to
+				// parsing via recursion
 				int expectedClosingBraces = 1;
 				while (expectedClosingBraces > 0) {
 					c = in.charAt(++index);
@@ -67,6 +61,7 @@ final class MyJSONParser implements JSONParser {
 			} else if (c == '"') {
 				String stringValue = "";
 				c = in.charAt(++index);
+				// concat until next quote
 				while (c != '"') {
 					stringValue += c;
 					c = in.charAt(++index);
